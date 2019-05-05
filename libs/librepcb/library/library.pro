@@ -76,6 +76,7 @@ SOURCES += \
     pkg/package.cpp \
     pkg/packagecheck.cpp \
     pkg/packagepad.cpp \
+    pkg/packagepadlistmodel.cpp \
     sym/cmd/cmdsymbolpinedit.cpp \
     sym/msg/msgduplicatepinname.cpp \
     sym/msg/msgmissingsymbolname.cpp \
@@ -151,6 +152,7 @@ HEADERS += \
     pkg/package.h \
     pkg/packagecheck.h \
     pkg/packagepad.h \
+    pkg/packagepadlistmodel.h \
     sym/cmd/cmdsymbolpinedit.h \
     sym/msg/msgduplicatepinname.h \
     sym/msg/msgmissingsymbolname.h \
