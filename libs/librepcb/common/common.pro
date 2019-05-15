@@ -31,6 +31,7 @@ SOURCES += \
     alignment.cpp \
     application.cpp \
     attributes/attribute.cpp \
+    attributes/attributelistmodel.cpp \
     attributes/attributeprovider.cpp \
     attributes/attributesubstitutor.cpp \
     attributes/attributetype.cpp \
@@ -139,6 +140,7 @@ HEADERS += \
     application.h \
     attributes/attribute.h \
     attributes/attributekey.h \
+    attributes/attributelistmodel.h \
     attributes/attributeprovider.h \
     attributes/attributesubstitutor.h \
     attributes/attributetype.h \
