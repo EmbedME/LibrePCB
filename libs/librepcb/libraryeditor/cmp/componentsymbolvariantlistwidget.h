@@ -66,16 +66,19 @@ public:
       UndoStack* undoStack, ComponentSymbolVariantList* list,
       IF_ComponentSymbolVariantEditorProvider* editorProvider) noexcept;
 
-  // General Methods
-  void addDefaultSymbolVariant();
-
   // Operator Overloadings
   ComponentSymbolVariantListWidget& operator       =(
       const ComponentSymbolVariantListWidget& rhs) = delete;
 
+private:  // Methods
+  void btnEditClicked(const QVariant& data) noexcept;
+  void editVariant(const Uuid& uuid) noexcept;
+
 private:  // Data
   QScopedPointer<EditableTableWidget>             mView;
   QScopedPointer<ComponentSymbolVariantListModel> mModel;
+  ComponentSymbolVariantList*                     mSymbolVariantList;
+  UndoStack*                                      mUndoStack;
   IF_ComponentSymbolVariantEditorProvider*        mEditorProvider;
 };
 

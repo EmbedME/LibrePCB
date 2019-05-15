@@ -22,7 +22,9 @@
  ******************************************************************************/
 #include "componentsymbolvariantlistwidget.h"
 
+#include <librepcb/common/undostack.h>
 #include <librepcb/common/widgets/editabletablewidget.h>
+#include <librepcb/library/cmp/cmd/cmdcomponentsymbolvariantedit.h>
 #include <librepcb/library/cmp/componentsymbolvariantlistmodel.h>
 
 #include <QtCore>
@@ -43,7 +45,11 @@ ComponentSymbolVariantListWidget::ComponentSymbolVariantListWidget(
     QWidget* parent) noexcept
   : QWidget(parent),
     mView(new EditableTableWidget(this)),
-    mModel(new ComponentSymbolVariantListModel(this)) {
+    mModel(new ComponentSymbolVariantListModel(this)),
+    mSymbolVariantList(nullptr),
+    mUndoStack(nullptr),
+    mEditorProvider(nullptr) {
+  mView->setShowEditButton(true);
   mView->setShowMoveButtons(true);
   mView->setModel(mModel.data());
   mView->horizontalHeader()->setSectionResizeMode(
@@ -67,6 +73,8 @@ ComponentSymbolVariantListWidget::ComponentSymbolVariantListWidget(
           &ComponentSymbolVariantListModel::moveSymbolVariantUp);
   connect(mView.data(), &EditableTableWidget::btnMoveDownClicked, mModel.data(),
           &ComponentSymbolVariantListModel::moveSymbolVariantDown);
+  connect(mView.data(), &EditableTableWidget::btnEditClicked, this,
+          &ComponentSymbolVariantListWidget::btnEditClicked);
 
   QVBoxLayout* layout = new QVBoxLayout(this);
   layout->setContentsMargins(0, 0, 0, 0);
@@ -85,7 +93,40 @@ void ComponentSymbolVariantListWidget::setReferences(
     IF_ComponentSymbolVariantEditorProvider* editorProvider) noexcept {
   mModel->setSymbolVariantList(list);
   mModel->setUndoStack(undoStack);
-  mEditorProvider = editorProvider;
+  mSymbolVariantList = list;
+  mUndoStack         = undoStack;
+  mEditorProvider    = editorProvider;
+}
+
+/*******************************************************************************
+ *  Private Methods
+ ******************************************************************************/
+
+void ComponentSymbolVariantListWidget::btnEditClicked(
+    const QVariant& data) noexcept {
+  tl::optional<Uuid> uuid = Uuid::tryFromString(data.toString());
+  if (uuid && mSymbolVariantList && mUndoStack && mEditorProvider) {
+    editVariant(*uuid);
+  }
+}
+
+void ComponentSymbolVariantListWidget::editVariant(const Uuid& uuid) noexcept {
+  try {
+    auto                   variant = mSymbolVariantList->get(uuid);
+    ComponentSymbolVariant copy(*variant);
+    if (mEditorProvider->openComponentSymbolVariantEditor(copy)) {
+      QScopedPointer<CmdComponentSymbolVariantEdit> cmd(
+          new CmdComponentSymbolVariantEdit(*variant));
+      cmd->setNorm(copy.getNorm());
+      cmd->setNames(copy.getNames());
+      cmd->setDescriptions(copy.getDescriptions());
+      cmd->setSymbolItems(copy.getSymbolItems());
+      mUndoStack->execCmd(cmd.take());
+    }
+  } catch (const Exception& e) {
+    QMessageBox::critical(this, tr("Could not edit symbol variant"),
+                          e.getMsg());
+  }
 }
 
 /*******************************************************************************
