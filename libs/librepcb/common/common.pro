@@ -43,6 +43,7 @@ SOURCES += \
     attributes/attrtyperesistance.cpp \
     attributes/attrtypestring.cpp \
     attributes/attrtypevoltage.cpp \
+    attributes/cmd/cmdattributeedit.cpp \
     boarddesignrules.cpp \
     cam/excellongenerator.cpp \
     cam/gerberaperturelist.cpp \
@@ -150,6 +151,7 @@ HEADERS += \
     attributes/attrtyperesistance.h \
     attributes/attrtypestring.h \
     attributes/attrtypevoltage.h \
+    attributes/cmd/cmdattributeedit.h \
     boarddesignrules.h \
     cam/excellongenerator.h \
     cam/gerberaperturelist.h \
