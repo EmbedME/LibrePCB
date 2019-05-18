@@ -34,6 +34,7 @@ SOURCES += \
     cmp/component.cpp \
     cmp/componentcheck.cpp \
     cmp/componentpinsignalmap.cpp \
+    cmp/componentpinsignalmapmodel.cpp \
     cmp/componentsignal.cpp \
     cmp/componentsignallistmodel.cpp \
     cmp/componentsymbolvariant.cpp \
@@ -108,6 +109,7 @@ HEADERS += \
     cmp/component.h \
     cmp/componentcheck.h \
     cmp/componentpinsignalmap.h \
+    cmp/componentpinsignalmapmodel.h \
     cmp/componentprefix.h \
     cmp/componentsignal.h \
     cmp/componentsignallistmodel.h \
