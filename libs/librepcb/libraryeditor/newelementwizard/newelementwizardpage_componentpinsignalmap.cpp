@@ -74,9 +74,9 @@ int NewElementWizardPage_ComponentPinSignalMap::nextId() const noexcept {
 void NewElementWizardPage_ComponentPinSignalMap::initializePage() noexcept {
   QWizardPage::initializePage();
   mSymbolVariantList = mContext.mComponentSymbolVariants;
-  mUi->pinSignalMapEditorWidget->setVariant(mContext.getWorkspace(),
-                                            mContext.mComponentSignals,
-                                            *mSymbolVariantList.value(0));
+  mUi->pinSignalMapEditorWidget->setReferences(
+      mContext.getWorkspace(), mContext.mComponentSignals, nullptr,
+      *mSymbolVariantList.value(0));
 }
 
 void NewElementWizardPage_ComponentPinSignalMap::cleanupPage() noexcept {

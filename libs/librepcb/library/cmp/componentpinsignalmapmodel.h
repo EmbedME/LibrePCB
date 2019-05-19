@@ -23,6 +23,7 @@
 /*******************************************************************************
  *  Includes
  ******************************************************************************/
+#include "componentsignal.h"
 #include "componentsymbolvariant.h"
 
 #include <QtCore>
@@ -35,6 +36,8 @@ namespace librepcb {
 class UndoStack;
 
 namespace library {
+
+class Symbol;
 
 /*******************************************************************************
  *  Class ComponentPinSignalMapModel
@@ -63,6 +66,9 @@ public:
 
   // Setters
   void setSymbolVariant(ComponentSymbolVariant* variant) noexcept;
+  void setSymbols(
+      const QHash<Uuid, std::shared_ptr<const Symbol>>* symbols) noexcept;
+  void setSignalList(const ComponentSignalList& list) noexcept;
   void setUndoStack(UndoStack* stack) noexcept;
 
   // Inherited from QAbstractItemModel
@@ -86,10 +92,15 @@ private:
       const std::shared_ptr<const ComponentPinSignalMapItem>& item,
       ComponentPinSignalMap::Event                            event) noexcept;
   void execCmd(UndoCommand* cmd);
+  void updateSignalComboBoxItems() noexcept;
 
 private:  // Data
-  ComponentSymbolVariant* mSymbolVariant;
-  UndoStack*              mUndoStack;
+  ComponentSymbolVariant*                           mSymbolVariant;
+  const QHash<Uuid, std::shared_ptr<const Symbol>>* mSymbols;
+  ComponentSignalList                               mSignals;
+  UndoStack*                                        mUndoStack;
+  QVector<QPair<QString, QVariant>>                 mSignalComboBoxItems;
+  QVector<QPair<QString, QVariant>>                 mDisplayTypeComboBoxItems;
 
   // Slots
   ComponentPinSignalMap::OnEditedSlot mOnEditedSlot;

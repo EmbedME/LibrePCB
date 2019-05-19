@@ -74,8 +74,8 @@ ComponentSymbolVariantEditDialog::ComponentSymbolVariantEditDialog(
   connect(mUi->symbolListWidget,
           &ComponentSymbolVariantItemListEditorWidget::edited, this,
           &ComponentSymbolVariantEditDialog::updateGraphicsItems);
-  mUi->pinSignalMapEditorWidget->setVariant(mWorkspace, mComponent.getSignals(),
-                                            mSymbVar);
+  mUi->pinSignalMapEditorWidget->setReferences(
+      mWorkspace, mComponent.getSignals(), &mSymbols, mSymbVar);
   // connect(mUi->symbolListWidget,
   //        &ComponentSymbolVariantItemListEditorWidget::edited,
   //        mUi->pinSignalMapEditorWidget,
@@ -115,7 +115,7 @@ void ComponentSymbolVariantEditDialog::updateGraphicsItems() noexcept {
       std::shared_ptr<Symbol> sym = std::make_shared<Symbol>(
           std::unique_ptr<TransactionalDirectory>(new TransactionalDirectory(
               TransactionalFileSystem::openRO(fp))));  // can throw
-      mSymbols.append(sym);
+      mSymbols.insert(sym->getUuid(), sym);
       std::shared_ptr<SymbolGraphicsItem> graphicsItem =
           std::make_shared<SymbolGraphicsItem>(*sym, *mGraphicsLayerProvider);
       graphicsItem->setPosition(item.getSymbolPosition());

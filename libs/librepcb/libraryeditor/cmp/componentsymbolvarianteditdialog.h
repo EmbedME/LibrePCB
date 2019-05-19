@@ -94,7 +94,7 @@ private:  // Data
   QScopedPointer<GraphicsScene>                        mGraphicsScene;
   QScopedPointer<DefaultGraphicsLayerProvider>         mGraphicsLayerProvider;
 
-  QList<std::shared_ptr<Symbol>>             mSymbols;
+  QHash<Uuid, std::shared_ptr<const Symbol>> mSymbols;
   QList<std::shared_ptr<SymbolGraphicsItem>> mGraphicsItems;
 };
 

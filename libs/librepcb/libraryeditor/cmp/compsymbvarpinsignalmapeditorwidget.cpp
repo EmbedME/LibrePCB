@@ -57,14 +57,20 @@ CompSymbVarPinSignalMapEditorWidget::CompSymbVarPinSignalMapEditorWidget(
   mView->setWordWrap(false);  // avoid too high cells due to word wrap
   mView->verticalHeader()->setMinimumSectionSize(10);  // more compact rows
   mView->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
-  // mView->horizontalHeader()->setSectionResizeMode(
-  //    DevicePadSignalMapModel::COLUMN_PAD, QHeaderView::ResizeToContents);
-  // mView->horizontalHeader()->setSectionResizeMode(
-  //    DevicePadSignalMapModel::COLUMN_SIGNAL, QHeaderView::Stretch);
-  // mView->setItemDelegateForColumn(DevicePadSignalMapModel::COLUMN_SIGNAL,
-  //                                new ComboBoxDelegate(this));
-  // mView->sortByColumn(DevicePadSignalMapModel::COLUMN_PAD,
-  // Qt::AscendingOrder);
+  mView->horizontalHeader()->setSectionResizeMode(
+      ComponentPinSignalMapModel::COLUMN_SYMBOL, QHeaderView::ResizeToContents);
+  mView->horizontalHeader()->setSectionResizeMode(
+      ComponentPinSignalMapModel::COLUMN_PIN, QHeaderView::ResizeToContents);
+  mView->horizontalHeader()->setSectionResizeMode(
+      ComponentPinSignalMapModel::COLUMN_SIGNAL, QHeaderView::Stretch);
+  mView->horizontalHeader()->setSectionResizeMode(
+      ComponentPinSignalMapModel::COLUMN_DISPLAY, QHeaderView::Stretch);
+  mView->setItemDelegateForColumn(ComponentPinSignalMapModel::COLUMN_SIGNAL,
+                                  new ComboBoxDelegate(this));
+  mView->setItemDelegateForColumn(ComponentPinSignalMapModel::COLUMN_DISPLAY,
+                                  new ComboBoxDelegate(this));
+  mView->sortByColumn(ComponentPinSignalMapModel::COLUMN_PIN,
+                      Qt::AscendingOrder);
 
   QVBoxLayout* layout = new QVBoxLayout(this);
   layout->setContentsMargins(0, 0, 0, 0);
@@ -85,9 +91,12 @@ CompSymbVarPinSignalMapEditorWidget::
  *  Setters
  ******************************************************************************/
 
-void CompSymbVarPinSignalMapEditorWidget::setVariant(
+void CompSymbVarPinSignalMapEditorWidget::setReferences(
     const workspace::Workspace& ws, const ComponentSignalList& sigs,
-    ComponentSymbolVariant& variant) noexcept {
+    const QHash<Uuid, std::shared_ptr<const Symbol> >* symbols,
+    ComponentSymbolVariant&                            variant) noexcept {
+  mModel->setSignalList(sigs);
+  mModel->setSymbols(symbols);
   mModel->setSymbolVariant(&variant);
   // mModel->setUndoStack(undoStack);
 }

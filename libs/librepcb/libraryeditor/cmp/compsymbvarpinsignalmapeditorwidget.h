@@ -42,6 +42,7 @@ class Workspace;
 
 namespace library {
 
+class Symbol;
 class ComponentPinSignalMapModel;
 
 namespace editor {
@@ -65,9 +66,10 @@ public:
   ~CompSymbVarPinSignalMapEditorWidget() noexcept;
 
   // General Methods
-  void setVariant(const workspace::Workspace& ws,
-                  const ComponentSignalList&  sigs,
-                  ComponentSymbolVariant&     variant) noexcept;
+  void setReferences(const workspace::Workspace&                       ws,
+                     const ComponentSignalList&                        sigs,
+                     const QHash<Uuid, std::shared_ptr<const Symbol>>* symbols,
+                     ComponentSymbolVariant& variant) noexcept;
 
   // Operator Overloadings
   CompSymbVarPinSignalMapEditorWidget& operator       =(
