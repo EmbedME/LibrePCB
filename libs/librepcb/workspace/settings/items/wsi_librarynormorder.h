@@ -49,6 +49,9 @@ public:
   explicit WSI_LibraryNormOrder(const SExpression& node);
   ~WSI_LibraryNormOrder() noexcept;
 
+  // Setters
+  void setSuggestedNorms(const QStringList& norms) noexcept;
+
   // Getters
   const QStringList& getNormOrder() const noexcept { return mList; }
 

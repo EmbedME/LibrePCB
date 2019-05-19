@@ -159,7 +159,8 @@ void ProjectEditor::showBoardEditor() noexcept {
 }
 
 void ProjectEditor::execProjectSettingsDialog(QWidget* parent) noexcept {
-  ProjectSettingsDialog d(mProject.getSettings(), *mUndoStack, parent);
+  ProjectSettingsDialog d(mWorkspace, mProject.getSettings(), *mUndoStack,
+                          parent);
   d.exec();
 }
 

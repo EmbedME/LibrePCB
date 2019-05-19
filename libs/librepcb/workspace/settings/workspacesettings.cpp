@@ -23,6 +23,7 @@
 #include "workspacesettings.h"
 
 #include "../workspace.h"
+#include "library/workspacelibrarydb.h"
 #include "workspacesettingsdialog.h"
 
 #include <librepcb/common/exceptions.h>
@@ -43,6 +44,7 @@ namespace workspace {
 
 WorkspaceSettings::WorkspaceSettings(const Workspace& workspace)
   : QObject(nullptr),
+    mWorkspace(workspace),
     mFilePath(workspace.getMetadataPath().getPathTo("settings.lp")) {
   qDebug("Load workspace settings...");
 
@@ -67,6 +69,10 @@ WorkspaceSettings::WorkspaceSettings(const Workspace& workspace)
 
   // load the settings dialog
   mDialog.reset(new WorkspaceSettingsDialog(*this));
+
+  // update data read from library DB
+  connect(&mWorkspace.getLibraryDb(), &WorkspaceLibraryDb::scanFinished, this,
+          &WorkspaceSettings::libraryScanCompleted);
 
   qDebug("Workspace settings successfully loaded!");
 }
@@ -120,6 +126,15 @@ void WorkspaceSettings::saveToFile() const {
 
 void WorkspaceSettings::serialize(SExpression& root) const {
   foreach (WSI_Base* item, mItems) { item->serialize(root); }
+}
+
+void WorkspaceSettings::libraryScanCompleted() const noexcept {
+  try {
+    mLibraryNormOrder->setSuggestedNorms(
+        mWorkspace.getLibraryDb().getAllSymbolVariantNorms());
+  } catch (const Exception& e) {
+    qCritical() << e.getMsg();
+  }
 }
 
 /*******************************************************************************

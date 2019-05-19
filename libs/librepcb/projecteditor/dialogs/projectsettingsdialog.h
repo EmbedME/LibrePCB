@@ -35,6 +35,10 @@ namespace librepcb {
 
 class UndoStack;
 
+namespace workspace {
+class Workspace;
+}
+
 namespace project {
 
 class ProjectSettings;
@@ -58,9 +62,10 @@ class ProjectSettingsDialog final : public QDialog {
 
 public:
   // Constructors / Destructor
-  explicit ProjectSettingsDialog(ProjectSettings& settings,
-                                 UndoStack&       undoStack,
-                                 QWidget*         parent = 0) noexcept;
+  explicit ProjectSettingsDialog(const workspace::Workspace& workspace,
+                                 ProjectSettings&            settings,
+                                 UndoStack&                  undoStack,
+                                 QWidget* parent = 0) noexcept;
   ~ProjectSettingsDialog() noexcept;
 
 private slots:
@@ -90,9 +95,10 @@ private:
   void updateGuiFromSettings() noexcept;
 
   // General
-  ProjectSettings&           mSettings;
-  Ui::ProjectSettingsDialog* mUi;
-  UndoStack&                 mUndoStack;
+  const workspace::Workspace& mWorkspace;
+  ProjectSettings&            mSettings;
+  Ui::ProjectSettingsDialog*  mUi;
+  UndoStack&                  mUndoStack;
 };
 
 /*******************************************************************************

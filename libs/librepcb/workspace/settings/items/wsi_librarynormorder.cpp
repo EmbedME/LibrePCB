@@ -53,7 +53,6 @@ WSI_LibraryNormOrder::WSI_LibraryNormOrder(const SExpression& node)
   // create a QComboBox with all available norms
   mComboBox.reset(new QComboBox());
   mComboBox->setEditable(true);
-  mComboBox->addItem("DIN EN 81346");  // TODO: add more norms (dynamically?)
 
   // create all buttons
   mBtnUp.reset(new QToolButton());
@@ -89,6 +88,16 @@ WSI_LibraryNormOrder::WSI_LibraryNormOrder(const SExpression& node)
 }
 
 WSI_LibraryNormOrder::~WSI_LibraryNormOrder() noexcept {
+}
+
+/*******************************************************************************
+ *  Setters
+ ******************************************************************************/
+
+void WSI_LibraryNormOrder::setSuggestedNorms(
+    const QStringList& norms) noexcept {
+  mComboBox->clear();
+  mComboBox->addItems(norms);
 }
 
 /*******************************************************************************

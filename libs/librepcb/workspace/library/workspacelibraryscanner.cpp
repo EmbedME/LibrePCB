@@ -424,6 +424,36 @@ void WorkspaceLibraryScanner::addElementToDb(SQLiteDatabase& db,
 }
 
 template <>
+void WorkspaceLibraryScanner::addElementToDb<Component>(
+    SQLiteDatabase& db, const QString& table, const QString& idColumn,
+    int libId, const QString& path, const Component& element) {
+  QSqlQuery query = db.prepareQuery("INSERT INTO " % table %
+                                    " (lib_id, filepath, uuid, version) VALUES "
+                                    "(:lib_id, :filepath, :uuid, :version)");
+  query.bindValue(":lib_id", libId);
+  query.bindValue(":filepath", path);
+  query.bindValue(":uuid", element.getUuid().toStr());
+  query.bindValue(":version", element.getVersion().toStr());
+  int id = db.insert(query);
+  for (const ComponentSymbolVariant& symbVar : element.getSymbolVariants()) {
+    QSqlQuery query = db.prepareQuery(
+        "INSERT INTO component_symbol_variants (component_id, uuid, norm, "
+        "name, description) VALUES (:component_id, :uuid, :norm, :name, "
+        ":description)");
+    query.bindValue(":component_id", id);
+    query.bindValue(":uuid", symbVar.getUuid().toStr());
+    query.bindValue(":norm", symbVar.getNorm());
+    query.bindValue(":name", *symbVar.getNames().getDefaultValue());
+    query.bindValue(":description",
+                    symbVar.getDescriptions().getDefaultValue());
+    db.insert(query);
+  }
+  addElementTranslationsToDb(db, table % "_tr", idColumn, id, element);
+  addElementCategoriesToDb(db, table % "_cat", idColumn, id,
+                           element.getCategories());
+}
+
+template <>
 void WorkspaceLibraryScanner::addElementToDb<Device>(
     SQLiteDatabase& db, const QString& table, const QString& idColumn,
     int libId, const QString& path, const Device& element) {

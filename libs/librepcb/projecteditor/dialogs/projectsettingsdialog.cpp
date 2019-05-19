@@ -28,6 +28,8 @@
 #include <librepcb/project/project.h>
 #include <librepcb/project/settings/cmd/cmdprojectsettingschange.h>
 #include <librepcb/project/settings/projectsettings.h>
+#include <librepcb/workspace/library/workspacelibrarydb.h>
+#include <librepcb/workspace/workspace.h>
 
 #include <QtCore>
 #include <QtWidgets>
@@ -43,10 +45,11 @@ namespace editor {
  *  Constructors / Destructor
  ******************************************************************************/
 
-ProjectSettingsDialog::ProjectSettingsDialog(ProjectSettings& settings,
-                                             UndoStack&       undoStack,
-                                             QWidget*         parent) noexcept
+ProjectSettingsDialog::ProjectSettingsDialog(
+    const workspace::Workspace& workspace, ProjectSettings& settings,
+    UndoStack& undoStack, QWidget* parent) noexcept
   : QDialog(parent),
+    mWorkspace(workspace),
     mSettings(settings),
     mUi(new Ui::ProjectSettingsDialog),
     mUndoStack(undoStack) {
@@ -72,8 +75,12 @@ ProjectSettingsDialog::ProjectSettingsDialog(ProjectSettings& settings,
   mUi->cbxLocales->setCurrentIndex(mUi->cbxLocales->findData(QLocale().name()));
 
   // list norms
-  mUi->cbxNorms->addItem(
-      "DIN EN 81346");  // TODO: add more norms (dynamically?)
+  try {
+    mUi->cbxNorms->addItems(
+        mWorkspace.getLibraryDb().getAllSymbolVariantNorms());
+  } catch (const Exception& e) {
+    qCritical() << e.getMsg();
+  }
 
   // update GUI elements
   updateGuiFromSettings();

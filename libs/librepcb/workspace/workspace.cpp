@@ -111,11 +111,11 @@ Workspace::Workspace(const FilePath& wsPath)
 
   // all OK, let's load the workspace stuff!
 
-  // load workspace settings
-  mWorkspaceSettings.reset(new WorkspaceSettings(*this));
-
   // load library database
   mLibraryDb.reset(new WorkspaceLibraryDb(*this));  // can throw
+
+  // load workspace settings (*after* the DB since settings depend on the DB!)
+  mWorkspaceSettings.reset(new WorkspaceSettings(*this));
 
   // load project models
   mRecentProjectsModel.reset(new RecentProjectsModel(*this));

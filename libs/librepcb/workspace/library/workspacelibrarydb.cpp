@@ -511,6 +511,18 @@ QSet<Uuid> WorkspaceLibraryDb::getDevicesOfComponent(
   return elements;
 }
 
+QStringList WorkspaceLibraryDb::getAllSymbolVariantNorms() const {
+  QSqlQuery query = mDb->prepareQuery(
+      "SELECT DISTINCT norm FROM component_symbol_variants ORDER BY norm ASC");
+  mDb->exec(query);
+
+  QStringList norms;
+  while (query.next()) {
+    norms.append(query.value(0).toString());
+  }
+  return norms;
+}
+
 /*******************************************************************************
  *  General Methods
  ******************************************************************************/
@@ -929,6 +941,17 @@ void WorkspaceLibraryDb::createAllTables() {
       "REFERENCES components(id) ON DELETE CASCADE NOT NULL, "
       "`category_uuid` TEXT NOT NULL, "
       "UNIQUE(component_id, category_uuid)"
+      ")");
+
+  // component symbol variants
+  queries << QString(
+      "CREATE TABLE IF NOT EXISTS component_symbol_variants ("
+      "`id` INTEGER PRIMARY KEY NOT NULL, "
+      "`component_id` INTEGER NOT NULL, "
+      "`uuid` TEXT NOT NULL, "
+      "`norm` TEXT NOT NULL, "
+      "`name` TEXT NOT NULL, "
+      "`description` TEXT NOT NULL"
       ")");
 
   // devices

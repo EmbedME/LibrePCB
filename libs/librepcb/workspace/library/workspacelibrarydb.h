@@ -123,11 +123,12 @@ public:
                                         int* components, int* devices) const;
   void getPackageCategoryElementCount(const tl::optional<Uuid>& category,
                                       int* categories, int* packages) const;
-  QSet<Uuid> getSymbolsByCategory(const tl::optional<Uuid>& category) const;
-  QSet<Uuid> getPackagesByCategory(const tl::optional<Uuid>& category) const;
-  QSet<Uuid> getComponentsByCategory(const tl::optional<Uuid>& category) const;
-  QSet<Uuid> getDevicesByCategory(const tl::optional<Uuid>& category) const;
-  QSet<Uuid> getDevicesOfComponent(const Uuid& component) const;
+  QSet<Uuid>  getSymbolsByCategory(const tl::optional<Uuid>& category) const;
+  QSet<Uuid>  getPackagesByCategory(const tl::optional<Uuid>& category) const;
+  QSet<Uuid>  getComponentsByCategory(const tl::optional<Uuid>& category) const;
+  QSet<Uuid>  getDevicesByCategory(const tl::optional<Uuid>& category) const;
+  QSet<Uuid>  getDevicesOfComponent(const Uuid& component) const;
+  QStringList getAllSymbolVariantNorms() const;
 
   // General Methods
 
@@ -191,7 +192,7 @@ private:
   QScopedPointer<WorkspaceLibraryScanner> mLibraryScanner;
 
   // Constants
-  static const int sCurrentDbVersion = 2;
+  static const int sCurrentDbVersion = 3;
 };
 
 /*******************************************************************************

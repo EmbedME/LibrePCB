@@ -116,10 +116,12 @@ private:  // Methods
   void saveToFile() const;
   /// @copydoc librepcb::SerializableObject::serialize()
   void serialize(SExpression& root) const override;
+  void libraryScanCompleted() const noexcept;
 
 private:  // Data
   // General Attributes
-  FilePath mFilePath;  ///< path to the "settings.lp" file
+  const Workspace& mWorkspace;
+  FilePath         mFilePath;  ///< path to the "settings.lp" file
   QScopedPointer<WorkspaceSettingsDialog> mDialog;  ///< the settings dialog
 
   // Settings Items
