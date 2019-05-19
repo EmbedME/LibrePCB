@@ -23,7 +23,7 @@
 /*******************************************************************************
  *  Includes
  ******************************************************************************/
-#include "componentpinsignalmap.h"
+#include "componentsymbolvariant.h"
 
 #include <QtCore>
 
@@ -62,7 +62,7 @@ public:
   ~ComponentPinSignalMapModel() noexcept;
 
   // Setters
-  void setPinSignalMap(ComponentPinSignalMap* map) noexcept;
+  void setSymbolVariant(ComponentSymbolVariant* variant) noexcept;
   void setUndoStack(UndoStack* stack) noexcept;
 
   // Inherited from QAbstractItemModel
@@ -88,8 +88,8 @@ private:
   void execCmd(UndoCommand* cmd);
 
 private:  // Data
-  ComponentPinSignalMap* mPinSignalMap;
-  UndoStack*             mUndoStack;
+  ComponentSymbolVariant* mSymbolVariant;
+  UndoStack*              mUndoStack;
 
   // Slots
   ComponentPinSignalMap::OnEditedSlot mOnEditedSlot;

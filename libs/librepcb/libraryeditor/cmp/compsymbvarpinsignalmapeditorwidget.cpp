@@ -88,7 +88,7 @@ CompSymbVarPinSignalMapEditorWidget::
 void CompSymbVarPinSignalMapEditorWidget::setVariant(
     const workspace::Workspace& ws, const ComponentSignalList& sigs,
     ComponentSymbolVariant& variant) noexcept {
-  // mModel->setPinSignalMap(variant.);
+  mModel->setSymbolVariant(&variant);
   // mModel->setUndoStack(undoStack);
 }
 

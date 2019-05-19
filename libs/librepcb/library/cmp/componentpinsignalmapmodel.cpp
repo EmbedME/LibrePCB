@@ -38,13 +38,13 @@ namespace library {
 
 ComponentPinSignalMapModel::ComponentPinSignalMapModel(QObject* parent) noexcept
   : QAbstractTableModel(parent),
-    mPinSignalMap(nullptr),
+    mSymbolVariant(nullptr),
     mUndoStack(nullptr),
     mOnEditedSlot(*this, &ComponentPinSignalMapModel::pinSignalMapEdited) {
 }
 
 ComponentPinSignalMapModel::~ComponentPinSignalMapModel() noexcept {
-  setPinSignalMap(nullptr);
+  setSymbolVariant(nullptr);
   setUndoStack(nullptr);
 }
 
@@ -52,18 +52,18 @@ ComponentPinSignalMapModel::~ComponentPinSignalMapModel() noexcept {
  *  Setters
  ******************************************************************************/
 
-void ComponentPinSignalMapModel::setPinSignalMap(
-    ComponentPinSignalMap* map) noexcept {
+void ComponentPinSignalMapModel::setSymbolVariant(
+    ComponentSymbolVariant* variant) noexcept {
   emit beginResetModel();
 
-  if (mPinSignalMap) {
-    mPinSignalMap->onEdited.detach(mOnEditedSlot);
+  if (mSymbolVariant) {
+    // mSymbolVariant->onEdited.detach(mOnEditedSlot);
   }
 
-  mPinSignalMap = map;
+  mSymbolVariant = variant;
 
-  if (mPinSignalMap) {
-    mPinSignalMap->onEdited.attach(mOnEditedSlot);
+  if (mSymbolVariant) {
+    // mSymbolVariant->onEdited.attach(mOnEditedSlot);
   }
 
   emit endResetModel();
@@ -78,10 +78,13 @@ void ComponentPinSignalMapModel::setUndoStack(UndoStack* stack) noexcept {
  ******************************************************************************/
 
 int ComponentPinSignalMapModel::rowCount(const QModelIndex& parent) const {
-  if (!parent.isValid() && mPinSignalMap) {
-    return mPinSignalMap->count();
+  int count = 0;
+  if (!parent.isValid() && mSymbolVariant) {
+    for (const auto& item : mSymbolVariant->getSymbolItems()) {
+      count += item.getPinSignalMap().count();
+    }
   }
-  return 0;
+  return count;
 }
 
 int ComponentPinSignalMapModel::columnCount(const QModelIndex& parent) const {
@@ -93,12 +96,19 @@ int ComponentPinSignalMapModel::columnCount(const QModelIndex& parent) const {
 
 QVariant ComponentPinSignalMapModel::data(const QModelIndex& index,
                                           int                role) const {
-  if (!index.isValid() || !mPinSignalMap) {
+  if (!index.isValid() || !mSymbolVariant) {
     return QVariant();
   }
 
-  std::shared_ptr<ComponentPinSignalMapItem> item =
-      mPinSignalMap->value(index.row());
+  int                                        count = 0;
+  std::shared_ptr<ComponentPinSignalMapItem> item;
+  for (const auto& symbolItem : mSymbolVariant->getSymbolItems()) {
+    if (index.row() < (count + symbolItem.getPinSignalMap().count())) {
+      item = symbolItem.getPinSignalMap().value(index.row() - count);
+    } else {
+      count += symbolItem.getPinSignalMap().count();
+    }
+  }
   if (!item) {
     return QVariant();
   }
@@ -192,7 +202,7 @@ Qt::ItemFlags ComponentPinSignalMapModel::flags(
 
 bool ComponentPinSignalMapModel::setData(const QModelIndex& index,
                                          const QVariant& value, int role) {
-  if (!mPinSignalMap) {
+  if (!mSymbolVariant) {
     return false;
   }
   try {
